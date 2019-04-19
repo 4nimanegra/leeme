@@ -1,0 +1,69 @@
+<script type="text/javascript" src="cordova.js"></script>
+<script>
+
+var leyendo=0;
+
+document.addEventListener('deviceready',myprogram,false);
+
+function sayThisSingle(mystring){
+
+	TTS.speak({text: mystring ,locale: 'es-ES',rate: 0.75});
+
+}
+function onSuccess(readedtext) {
+	sayThisSingle(readedtext);
+	leyendo=0;
+}
+
+function onFail(message){
+
+	alert("Failed because: "+message);
+
+	leyendo=0;
+}
+
+function onFailCamera(message){
+
+	alert("Exiting application.");
+
+	if (navigator.app) {
+		    navigator.app.exitApp();
+	} else if (navigator.device) {
+		    navigator.device.exitApp();
+	} else {
+		    window.close();
+	}
+
+}
+function testSpeaking(){
+
+	if(leyendo == 1){
+
+		setTimeout(testSpeaking,500);
+
+	}else{
+
+		setTimeout(myprogram,500);
+
+	}
+
+}
+
+function recogniceImage(imageData) {
+
+	leyendo=1;
+
+	setTimeout(testSpeaking,500);
+	
+	textocr.recText(0,1,imageData, onSuccess, onFail);
+
+
+}
+
+function myprogram(){
+
+	navigator.camera.getPicture(recogniceImage, onFailCamera, { quality: 100, correctOrientation: true });
+
+}
+
+</script>
